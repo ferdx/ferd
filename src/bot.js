@@ -4,11 +4,17 @@ var Message = require('./message');
 var Response = require('./response');
 
 /**
+ * TODO: FIGURE OUT HOW TO DESTROY OBSERVABLES
+ * BUG: OBSERVABLES MUST BE EXPLICITLY DESTROYED. MEMORY LEAK!
+ */
+
+/**
  * Creates a new bot
  * @param {String} apiKey Slack API Key
  */
 var Bot = function(apiKey) {
   this.slack = new Slack(apiKey, true, true);
+  this.messages = null;
 };
 
 /**
@@ -19,7 +25,16 @@ Bot.prototype.login = function() {
   rx.Observable.fromEvent(this.slack, 'open')
     .subscribe(this.setUp());
   this.slack.login();
-  this.handleMessage();
+  this.messages = this.handleMessage();
+};
+
+/**
+ * Closes WebSocket and cleans up Observables
+ * @return {[type]} [description]
+ */
+Bot.prototype.logout = function() {
+  // this.slack.logout();
+  // destroy all observables created from this.messages
 };
 
 /**
@@ -30,7 +45,6 @@ Bot.prototype.handleMessage = function() {
   var messages = rx.Observable.fromEvent(this.slack, 'message')
     .where(e => e.type === 'message')
     .map(e => new Message(e));
-  this.messages = messages;
   return messages;
 };
 
