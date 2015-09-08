@@ -25,7 +25,7 @@ Bot.prototype.login = function() {
   rx.Observable.fromEvent(this.slack, 'open')
     .subscribe(this.setUp());
   this.slack.login();
-  this.messages = this.handleMessage();
+  this.messages = this.createMessageStream();
 };
 
 /**
@@ -41,29 +41,56 @@ Bot.prototype.logout = function() {
  * Sets up an Observable message stream
  * @return {[type]} [description]
  */
-Bot.prototype.handleMessage = function() {
+Bot.prototype.createMessageStream = function() {
   var messages = rx.Observable.fromEvent(this.slack, 'message')
     .where(e => e.type === 'message')
-    .map(e => new Message(e));
+    // .map(e => new Message(e));
   return messages;
 };
 
 /**
  * Sets up an Observer to the message stream
- * BUG: Filter by match before creating Response.
- * @param  {[type]}   trigger  [description]
+ * @param  {Regex}   capture  [description]
  * @param  {Function} callback [description]
- * @return {[type]}            [description]
+ * @return {Observable}            [description]
  */
-Bot.prototype.listen = function(trigger, callback) {
+Bot.prototype.listen = function(capture, callback) {
+  return this.hear(function(message) {
+    return true;
+  }, capture, callback);
+};
+
+/**
+ * Listens to message stream for bot name and capture
+ * @return {[type]} [description]
+ */
+Bot.prototype.respond = function(capture, callback) {
+  return this.hear(function(message) {
+    return message.text.match(/ferd/);
+  }, capture, callback);
+};
+
+/**
+ * Helper for listen, respond
+ * @param  {Function}   filter   [description]
+ * @param  {Regex}   capture  [description]
+ * @param  {Function} callback [description]
+ * @return {Obervable}            [description]
+ */
+Bot.prototype.hear = function(filter, capture, callback) {
   var slack = this.slack;
-  this.messages
-    .map(message => Response(trigger, message, slack))
-    .filter(response => response !== null)
+  var messages = this.messages
+    .filter(m => filter(m) && m.text.match(capture))
+    .map(message => Response(capture, message, slack));
+
+  messages
     .subscribe(function(response) {
       callback(response);
     });
+
+  return messages;
 };
+
 
 /**
  * TODO: ???
