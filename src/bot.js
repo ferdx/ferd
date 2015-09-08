@@ -1,6 +1,7 @@
 var Slack = require('slack-client');
 var rx = require('rx');
 var Message = require('./message');
+var Response = require('./response');
 
 /**
  * Creates a new bot
@@ -24,24 +25,19 @@ Bot.prototype.handleMessage = function() {
   this.messages = messages;
   return messages;
 };
-
+/**
+ * BUG: Filter by match before creating Response.
+ * @param  {[type]}   trigger  [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
 Bot.prototype.listen = function(trigger, callback) {
-  var self = this;
+  var slack = this.slack;
   this.messages
-    .map(message => {
-      var channel = self.slack.getChannelGroupOrDMByID(message.channel());
-      return {
-        match: message.text().match(trigger),
-        message: message,
-        trigger: trigger,
-        send: function(response) {
-          channel.send(response);
-        }
-      };
-    })
-    .filter(m => m.match !== null)
-    .subscribe(function(m) {
-      callback(m);
+    .map(message => Response(trigger, message, slack))
+    .filter(response => response !== null)
+    .subscribe(function(response) {
+      callback(response);
     });
 };
 
