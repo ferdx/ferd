@@ -3,5 +3,9 @@
   "version": "0.2.0",
   "description": "A modular slackbot",
   "author": "Timothy Quach",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "rx": "^3.1.2",
+    "slack-client": "^1.4.1"
+  }
 }
