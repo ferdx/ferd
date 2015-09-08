@@ -26,15 +26,23 @@ Bot.prototype.handleMessage = function() {
 };
 
 Bot.prototype.listen = function(trigger, callback) {
+  var self = this;
   this.messages
-    .filter(matchesTrigger)
-    .subscribe(function() {
-      callback();
+    .map(message => {
+      var channel = self.slack.getChannelGroupOrDMByID(message.channel());
+      return {
+        match: message.text().match(trigger),
+        message: message,
+        trigger: trigger,
+        send: function(response) {
+          channel.send(response);
+        }
+      };
+    })
+    .filter(m => m.match !== null)
+    .subscribe(function(m) {
+      callback(m);
     });
-
-  function matchesTrigger(message) {
-    return message.text().match(trigger);
-  }
 };
 
 Bot.prototype.setUp = function() {
