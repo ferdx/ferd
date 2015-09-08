@@ -11,6 +11,10 @@ var Bot = function(apiKey) {
   this.slack = new Slack(apiKey, true, true);
 };
 
+/**
+ * Opens WebSocket with slack using API key
+ * @return {[type]} [description]
+ */
 Bot.prototype.login = function() {
   rx.Observable.fromEvent(this.slack, 'open')
     .subscribe(this.setUp());
@@ -18,6 +22,10 @@ Bot.prototype.login = function() {
   this.handleMessage();
 };
 
+/**
+ * Sets up an Observable message stream
+ * @return {[type]} [description]
+ */
 Bot.prototype.handleMessage = function() {
   var messages = rx.Observable.fromEvent(this.slack, 'message')
     .where(e => e.type === 'message')
@@ -25,7 +33,9 @@ Bot.prototype.handleMessage = function() {
   this.messages = messages;
   return messages;
 };
+
 /**
+ * Sets up an Observer to the message stream
  * BUG: Filter by match before creating Response.
  * @param  {[type]}   trigger  [description]
  * @param  {Function} callback [description]
@@ -41,6 +51,9 @@ Bot.prototype.listen = function(trigger, callback) {
     });
 };
 
+/**
+ * TODO: ???
+ */
 Bot.prototype.setUp = function() {
   // set up stuff when bot logs in
 };
