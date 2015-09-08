@@ -1,6 +1,5 @@
 var Slack = require('slack-client');
 var rx = require('rx');
-var Message = require('./message');
 var Response = require('./response');
 
 /**
@@ -23,7 +22,7 @@ var Bot = function(apiKey) {
  */
 Bot.prototype.login = function() {
   rx.Observable.fromEvent(this.slack, 'open')
-    .subscribe(this.setUp());
+    .subscribe(this.setUp(next));
   this.slack.login();
   this.messages = this.createMessageStream();
 };
@@ -97,6 +96,7 @@ Bot.prototype.hear = function(filter, capture, callback) {
  */
 Bot.prototype.setUp = function() {
   // set up stuff when bot logs in
+  console.log(next);
 };
 
 module.exports = Bot;
