@@ -15,6 +15,7 @@ var Bot = function(apiKey) {
   this.slack = new Slack(apiKey, true, true);
   this.messages = null;
   this.name = null;
+  this.id = null;
 };
 
 /**
@@ -34,7 +35,7 @@ Bot.prototype.login = function() {
  * @return {[type]} [description]
  */
 Bot.prototype.logout = function() {
-  // this.slack.logout();
+  this.slack.disconnect();
   // destroy all observables created from this.messages
 };
 
@@ -68,7 +69,8 @@ Bot.prototype.listen = function(capture, callback) {
 Bot.prototype.respond = function(capture, callback) {
   var self = this;
   return this.hear(function(message) {
-    return message.text.match(new RegExp(self.name, 'i'));
+    return message.text.match(new RegExp(self.name, 'i')) ||
+      message.text.match(new RegExp('<' + self.id + '>', 'i'));
   }, capture, callback);
 };
 
@@ -77,29 +79,30 @@ Bot.prototype.respond = function(capture, callback) {
  * @param  {Function}   filter   [description]
  * @param  {Regex}   capture  [description]
  * @param  {Function} callback [description]
- * @return {Obervable}            [description]
+ * @return {Disposable}            [description]
  */
 Bot.prototype.hear = function(filter, capture, callback) {
+  var self = this;
   var slack = this.slack;
   var messages = this.messages
     .filter(m => filter(m) && m.text.match(capture))
-    .map(message => Response(capture, message, slack));
 
-  messages
-    .subscribe(function(response) {
+  var disposable = messages
+    .subscribe(function(message) {
+      // console.log(message.text);
+      var response = Response(capture, message, slack)
       callback(response);
     });
 
-  return messages;
+  return disposable;
 };
 
-
 /**
- * TODO: ???
+ * Bootstraps Bot identity
  */
 Bot.prototype.setUp = function() {
-  // set up stuff when bot logs in
   this.name = this.slack.self.name;
+  this.id = this.slack.self.id;
 };
 
 module.exports = Bot;
