@@ -2,6 +2,7 @@
   "name": "ferd",
   "version": "0.2.0",
   "description": "A modular slackbot",
+  "main": "index.js",
   "author": "Timothy Quach",
   "license": "ISC",
   "dependencies": {
