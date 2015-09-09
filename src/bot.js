@@ -105,4 +105,23 @@ Bot.prototype.setUp = function() {
   this.id = this.slack.self.id;
 };
 
+/**
+ * Inject ferd into module
+ * @param {Module} ferdModules [description]
+ */
+Bot.prototype.addModule = function(ferdModule) {
+  ferdModule(this);
+};
+
+/**
+ * Inject ferd into modules
+ * @param {Array[Module]} ferdModules [description]
+ */
+Bot.prototype.addModules = function(ferdModules) {
+  var self = this;
+  ferdModules.forEach(function(module) {
+    module(self);
+  });
+};
+
 module.exports = Bot;
