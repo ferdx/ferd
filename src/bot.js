@@ -14,6 +14,7 @@ var Response = require('./response');
 var Bot = function(apiKey) {
   this.slack = new Slack(apiKey, true, true);
   this.messages = null;
+  this.name = null;
 };
 
 /**
@@ -21,8 +22,9 @@ var Bot = function(apiKey) {
  * @return {[type]} [description]
  */
 Bot.prototype.login = function() {
+  var self = this;
   rx.Observable.fromEvent(this.slack, 'open')
-    .subscribe(this.setUp(next));
+    .subscribe(() => self.setUp());
   this.slack.login();
   this.messages = this.createMessageStream();
 };
@@ -64,8 +66,9 @@ Bot.prototype.listen = function(capture, callback) {
  * @return {[type]} [description]
  */
 Bot.prototype.respond = function(capture, callback) {
+  var self = this;
   return this.hear(function(message) {
-    return message.text.match(/ferd/);
+    return message.text.match(new RegExp(self.name, 'i'));
   }, capture, callback);
 };
 
@@ -96,7 +99,7 @@ Bot.prototype.hear = function(filter, capture, callback) {
  */
 Bot.prototype.setUp = function() {
   // set up stuff when bot logs in
-  console.log(next);
+  this.name = this.slack.self.name;
 };
 
 module.exports = Bot;
