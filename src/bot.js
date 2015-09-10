@@ -1,6 +1,5 @@
 var Slack = require('slack-client');
 var rx = require('rx');
-var Message = require('./message');
 var Response = require('./response');
 
 /**
@@ -15,6 +14,8 @@ var Response = require('./response');
 var Bot = function(apiKey) {
   this.slack = new Slack(apiKey, true, true);
   this.messages = null;
+  this.name = null;
+  this.id = null;
 };
 
 /**
@@ -22,10 +23,11 @@ var Bot = function(apiKey) {
  * @return {[type]} [description]
  */
 Bot.prototype.login = function() {
+  var self = this;
   rx.Observable.fromEvent(this.slack, 'open')
-    .subscribe(this.setUp());
+    .subscribe(() => self.setUp());
   this.slack.login();
-  this.messages = this.handleMessage();
+  this.messages = this.createMessageStream();
 };
 
 /**
@@ -33,7 +35,7 @@ Bot.prototype.login = function() {
  * @return {[type]} [description]
  */
 Bot.prototype.logout = function() {
-  // this.slack.logout();
+  this.slack.disconnect();
   // destroy all observables created from this.messages
 };
 
@@ -41,35 +43,85 @@ Bot.prototype.logout = function() {
  * Sets up an Observable message stream
  * @return {[type]} [description]
  */
-Bot.prototype.handleMessage = function() {
+Bot.prototype.createMessageStream = function() {
   var messages = rx.Observable.fromEvent(this.slack, 'message')
     .where(e => e.type === 'message')
-    .map(e => new Message(e));
+    // .map(e => new Message(e));
   return messages;
 };
 
 /**
  * Sets up an Observer to the message stream
- * BUG: Filter by match before creating Response.
- * @param  {[type]}   trigger  [description]
+ * @param  {Regex}   capture  [description]
  * @param  {Function} callback [description]
- * @return {[type]}            [description]
+ * @return {Observable}            [description]
  */
-Bot.prototype.listen = function(trigger, callback) {
-  var slack = this.slack;
-  this.messages
-    .map(message => Response(trigger, message, slack))
-    .filter(response => response !== null)
-    .subscribe(function(response) {
-      callback(response);
-    });
+Bot.prototype.listen = function(capture, callback) {
+  return this.hear(function(message) {
+    return true;
+  }, capture, callback);
 };
 
 /**
- * TODO: ???
+ * Listens to message stream for bot name and capture
+ * @return {[type]} [description]
+ */
+Bot.prototype.respond = function(capture, callback) {
+  var self = this;
+  return this.hear(function(message) {
+    return message.text.match(new RegExp(self.name, 'i')) ||
+      message.text.match(new RegExp('<' + self.id + '>', 'i'));
+  }, capture, callback);
+};
+
+/**
+ * Helper for listen, respond
+ * @param  {Function}   filter   [description]
+ * @param  {Regex}   capture  [description]
+ * @param  {Function} callback [description]
+ * @return {Disposable}            [description]
+ */
+Bot.prototype.hear = function(filter, capture, callback) {
+  var self = this;
+  var slack = this.slack;
+  var messages = this.messages
+    .filter(m => filter(m) && m.text.match(capture))
+
+  var disposable = messages
+    .subscribe(function(message) {
+      // console.log(message.text);
+      var response = Response(capture, message, slack)
+      callback(response);
+    });
+
+  return disposable;
+};
+
+/**
+ * Bootstraps Bot identity
  */
 Bot.prototype.setUp = function() {
-  // set up stuff when bot logs in
+  this.name = this.slack.self.name;
+  this.id = this.slack.self.id;
+};
+
+/**
+ * Inject ferd into module
+ * @param {Module} ferdModules [description]
+ */
+Bot.prototype.addModule = function(ferdModule) {
+  ferdModule(this);
+};
+
+/**
+ * Inject ferd into modules
+ * @param {Array[Module]} ferdModules [description]
+ */
+Bot.prototype.addModules = function(ferdModules) {
+  var self = this;
+  ferdModules.forEach(function(module) {
+    module(self);
+  });
 };
 
 module.exports = Bot;

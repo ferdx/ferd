@@ -1,5 +1,5 @@
 var ResponseFactory = function(trigger, message, slack) {
-  var match = message.text().match(trigger);
+  var match = message.text.match(trigger);
   if (match) return new Response(trigger, message, slack, match);
   else return null;
 };
@@ -16,7 +16,7 @@ var Response = function(trigger, message, slack, match) {
  * @param  {String} response A response
  */
 Response.prototype.send = function(response) {
-  var channelId = this.message.channel();
+  var channelId = this.message.channel;
   var channel = this.getChannelGroupOrDMByID(channelId);
   channel.send(response);
 };
@@ -27,7 +27,7 @@ Response.prototype.send = function(response) {
  * @return {Object} A slack user object
  */
 Response.prototype.getMessageSender = function() {
-  var userId = this.message.user();
+  var userId = this.message.user;
   var user = this.getUser(userId);
   return user;
 };
