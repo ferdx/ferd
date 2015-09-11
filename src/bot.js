@@ -24,8 +24,8 @@ var Bot = function(apiKey) {
  */
 Bot.prototype.login = function() {
   var self = this;
-  rx.Observable.fromEvent(this.slack, 'open')
-    .subscribe(() => self.setUp());
+  this.slack.on('open', () => self.setUp() );
+  this.slack.on('error', (reason, code) => console.log('socket error: reason ' + reason + ', code ' + code) );
   this.slack.login();
   this.messages = this.createMessageStream();
 };
