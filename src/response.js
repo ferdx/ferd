@@ -3,7 +3,14 @@ var ResponseFactory = function(trigger, message, slack) {
   if (match) return new Response(trigger, message, slack, match);
   else return null;
 };
-
+/**
+ * [Response description]
+ * @constructor
+ * @param {regex} trigger [description]
+ * @param {message} message [description]
+ * @param {slack} slack   [description]
+ * @param {match} match   [description]
+ */
 var Response = function(trigger, message, slack, match) {
   this.message = message;
   this.trigger = trigger;
@@ -13,7 +20,7 @@ var Response = function(trigger, message, slack, match) {
 
 /**
  * Sends response to same channel
- * @param  {String} response A response
+ * @param  {String} response - A response
  */
 Response.prototype.send = function(response) {
   var channelId = this.message.channel;
@@ -22,9 +29,9 @@ Response.prototype.send = function(response) {
 };
 
 /**
- * Returns Slack User object
+ * Returns Slack User object of sender
  * https://api.slack.com/types/user
- * @return {Object} A slack user object
+ * @return {object} A slack user object
  */
 Response.prototype.getMessageSender = function() {
   var userId = this.message.user;
@@ -34,8 +41,9 @@ Response.prototype.getMessageSender = function() {
 
 /**
  * Returns User slack object
- * @param  {String} id [description]
- * @return {Object}    [description]
+ * https://api.slack.com/types/user
+ * @param  {String} id
+ * @return {Object}
  */
 Response.prototype.getUser = function(id) {
   return this.slack.getUserByID(id);
@@ -52,7 +60,7 @@ Response.prototype.getChannelGroupOrDMByID = function(id) {
   return this.slack.getChannelGroupOrDMByID(id);
 }
 
-/**
+/***
  * BUG: UNTESTED
  * @param  {[type]} id [description]
  * @return {[type]}    [description]
