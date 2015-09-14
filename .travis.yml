@@ -1,7 +1,12 @@
 language: node_js
 node_js:
-  - "0.12"
-  - "0.11"
-  - "0.10"
+- '0.12'
+- '0.11'
+- '0.10'
 before_install: npm install -g grunt
 install: npm install
+deploy:
+  provider: npm
+  email: nick@callmenick.com
+  api_key:
+    secure: upUvWXLpV0aEjcvCh7G/PQLBHZo2nVpJKI0SRCKDhXiXGdHNEdvn7c38cDhCnYyzboZsRAJ+/c33BZJscjT7A05cIT1I3p+ySpS6QzGLOcvP7JdKmnoqareRmw54dZLd9lWS+o9bEafGN7Ifq8Bi7s9SdxBV6rXLgocctiCQPz46w7pOE37KKGOiXOf5HqG2myBfp2ni+rvXQ4Fcd7i6O2hiI8TAljnbVDGobqmjmw5f0EJowsxTqX38lYIcl6EoDxVU7XRhPbbnAJCiUWKM2T0uOItojE9hgqevWz0n47ujpD/sT+zHyABRGAO8/H8cTy4wm3IzZi8dx77ruUSAGapKSG1n9uocZpAAG7qDmuQq5MiRF6h/zw1EGNuTcfNyJ6d8oYOp/y8BUps6eI1OlTYJkEzKBdDe4N4mj+p5tFjpuTVHtkTIVzo5qlzsHA53uim25zH9tSYua/EFYhyDtWGk8GyOzrHRvka9xb9ykCyK3dYTc0foclMClasZQeVOK4guSEB2ad9PzmwFy/PqoGtAYK+j8WGXjcii1c/x+MmY+bPh5J07OVAXUoeafia+lvKNkpwiu4U75e8t0YDxZ6BcM4XSDnzObvN3nv4ICWCq0TgGoQ5u3wAuw2mTK2Uw6PbSpNSz0xymN2CjvYCGRUxLHAfMZ1hVYYcblU2V0c8=
