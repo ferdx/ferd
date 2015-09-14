@@ -48,7 +48,7 @@ Response.prototype.send = function(outgoingMessage) {
 
 /**
  * Posts message to same channel
- * @param  {obj} response A message object
+ * @param  {obj} outgoingMessage A message object
  */
 Response.prototype.postMessage = function(outgoingMessage) {
   var channelId = this.message.channel;
