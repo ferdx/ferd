@@ -4,11 +4,5 @@ node_js:
 - '0.11'
 - '0.10'
 before_install:
-- npm install -g npm@'>=2.14.1'
 - npm install -g grunt
 install: npm install
-deploy:
-  provider: npm
-  email: nick@callmenick.com
-  api_key:
-    secure: okgIassD9Ki0Idbo93pAJN9NgwyYd9lCPM5POU2pREBm/VxauKewegQYAlxQhhJtwn0tFwbVOcuK/QBvrZVhRO+IwY7YAT6Ydi8G80IB5+3LEgdjX7ky6tHZk4BbuMi0bIvM06PwjHyM7iSSCCbzuD4zj0nfD4KKVRAkWqkQlL/V2qEEpEmRSVcy6dInOxRUvdzCm1puriQbcYzn4ILWh8owrGvZ1C/HVkAFxcIoNkLn55P0X5+WKmDHOxSpJYGK2DLtHE/TjJrsGsRFyj1xF2lvYF6pdWYY2qolNGaNYMcen8cL+fv4ev4X0shVVGfwuZhBVO0FhbyASBBZx1Qntj2rz0TmgPJEEuCQBOGPjp9MqpjKdHsTXw2F2WYT2dxx/kWA+8DjvebDpMn83AWgn+0uKxPKApmD5TRR4u2uVaf3CEFnZdMOIQ5YUOP1L8ECG3qBr85a7UX/V+uEo8zj5omSbcpguT+IO6K/5iGkBcF0BXdQQk3ydSl+810rXTosr2mHeOPtCwQ2eXdW5BnRkM6Q1bjcUXbuOSsqg54EAqLXQvZ2rBg1nkiRb8m96Afbmp5H4MQ1+X6kEBPDW0BlyPnCDUDei0Ts4Dh9PLNGPrlAPSGMc5F7FEMum0UYhEQMSLLNmxv6soOxAhvf+ABKeGxxhXdqx+ZvedPRPlJxbZo=

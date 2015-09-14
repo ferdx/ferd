@@ -3,12 +3,16 @@
   "version": "0.3.0",
   "description": "A modular Slackbot",
   "main": "index.js",
-  "author": "Timothy Quach",
+  "author": "Timothy Quach <timothyquachbot@gmail.com>",
   "contributors": [{
     "name": "Nick Salloum",
     "email": "nick@callmenick.com"
   }],
   "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/ferdx/ferd"
+  },
   "dependencies": {
     "rx": "^3.1.2",
     "slack-client": "^1.4.1"
