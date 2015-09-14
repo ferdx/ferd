@@ -16,6 +16,11 @@ module.exports = function(ferd) {
     response.send("You've said yo " + yoCount + " times");
   });
 
+  ferd.listen(/ferd poo/i, function(response) {
+    var sender = response.getMessageSender();
+    response.sendDirectMessage('No, ' + sender.name + '. Poo be upon you!');
+  });
+
 };
 
 var randomYo = ["whats up? ", "hey ", "yo "];

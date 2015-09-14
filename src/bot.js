@@ -2,15 +2,15 @@ var Slack = require('slack-client');
 var rx = require('rx');
 var Response = require('./response');
 
-/**
- * TODO: FIGURE OUT HOW TO DESTROY OBSERVABLES
- * BUG: OBSERVABLES MUST BE EXPLICITLY DESTROYED. MEMORY LEAK!
- */
+// TODO: FIGURE OUT HOW TO DESTROY OBSERVABLES
+// BUG: OBSERVABLES MUST BE EXPLICITLY DESTROYED. MEMORY LEAK!
 
 /**
- * A modular Slack Bot.
+ * Ferd
+ * 
  * @constructor
- * @param {string} apiToken Slack's Bot Integration API Token
+ * @description A modular Slack Bot. Returns nothing.
+ * @param {String} apiToken Slack's Bot Integration API Token
  */
 var Ferd = function(apiToken) {
   this.slack = new Slack(apiToken, true, true);
@@ -20,18 +20,24 @@ var Ferd = function(apiToken) {
 };
 
 /**
- * Opens WebSocket with Slack's Real-time Messaging API
+ * Ferd.prototype.login
+ *
+ * @description Opens WebSocket with Slack's Real-time Messaging API. Returns
+ *   nothing.
  */
 Ferd.prototype.login = function() {
   var self = this;
-  this.slack.on('open', () => self.setUp() );
+  this.slack.on('open', () => self._setUp() );
   this.slack.on('error', (reason, code) => console.log('socket error: reason ' + reason + ', code ' + code) );
   this.slack.login();
-  this.messages = this.createMessageStream();
+  this.messages = this._createMessageStream();
 };
 
 /**
- * Closes WebSocket with Slack's Real-time Messaging API
+ * Ferd.prototype.logout
+ *
+ * @description Closes WebSocket with Slack's Real-time Messaging API. Returns
+ *   nothing.
  */
 Ferd.prototype.logout = function() {
   this.slack.disconnect();
@@ -39,18 +45,22 @@ Ferd.prototype.logout = function() {
 };
 
 /**
- * Inject a module into Ferd
- * @param {module} ferdModule A module to inject into Ferd
- * `ferd.addModule(require('./ferd_modules/yo.js'))`
+ * Ferd.prototype.addModule
+ * 
+ * @description Injects a module into Ferd. Returns nothing.
+ * @param {module} ferdModule A module to inject into Ferd. Example:
+ *   `ferd.addModule(require('./ferd_modules/yo.js'))`
  */
 Ferd.prototype.addModule = function(ferdModule) {
   ferdModule(this);
 };
 
 /**
- * Inject modules into Ferd
- * @param {module[]} ferdModules An array of modules to inject into Ferd
- * i.e. `ferd.addModules([require('ferd-bart'), require('./ferd_modules/yo.js'), ...])`
+ * Ferd.prototype.addModules
+ * 
+ * @description Injects modules into Ferd. Returns nothing.
+ * @param {module[]} ferdModules An array of modules to inject into Ferd.
+ *   Example: `ferd.addModules([require('ferd-bart'), require('./ferd_modules/yo.js'), ...])`
  */
 Ferd.prototype.addModules = function(ferdModules) {
   var self = this;
@@ -60,9 +70,12 @@ Ferd.prototype.addModules = function(ferdModules) {
 };
 
 /**
- * Listen to message stream for `capture` to trigger, then calls `callback`.
- * @param  {regex}   capture - regex to trigger callback on
- * @param  {function} callback - callback with response object passed in
+ * Ferd.prototype.listen
+ *
+ * @description Listen to message stream for `capture` to trigger, then calls
+ *   a `callback` function.
+ * @param {String} capture A regular expression to trigger the callback on
+ * @param {Function} callback A callback with a response object passed in
  * @return {observable} - WHAT IS AN OBSERVABLE?
  */
 Ferd.prototype.listen = function(capture, callback) {
@@ -72,10 +85,13 @@ Ferd.prototype.listen = function(capture, callback) {
 };
 
 /**
- * Listens to message stream for ferd's name and `capture` to trigger, then calls `callback`
- * @param  {regex}   capture - regex to trigger callback on
- * @param  {function} callback - callback with response object passed in
- * @return {observable} - Are observables puppies?
+ * Ferd.prototype.respond
+ *
+ * @description  Listens to message stream for ferd's name and `capture` to
+ *   trigger, then calls `callback`
+ * @param {String} capture A regular expression to trigger the callback on
+ * @param {Function} callback A callback with a response object passed in
+ * @return {observable} - PUPPIES?
  */
 Ferd.prototype.respond = function(capture, callback) {
   var self = this;
@@ -86,21 +102,23 @@ Ferd.prototype.respond = function(capture, callback) {
 };
 
 /**
- * Listens to message stream for `filter` to return true and `capture` to trigger, then calls `callback`
- * @param {function} filter - A function that returns true or false. Takes in message.
- * @param  {regex}   capture - regex to trigger callback on
- * @param  {function} callback - callback with response object passed in
- * @return {disposable} - More reactive shenanigans.
+ * Ferd.prototype.hear
+ *
+ * @description Listens to message stream for `filter` to return true and
+ *   `capture` to trigger, then calls `callback`
+ * @param {Function} filter A function that returns true or false. Takes in message.
+ * @param {String} capture A regular expression to trigger the callback on
+ * @param {Function} callback A callback with a response object passed in
+ * @return {disposable} More reactive shenanigans.
  */
 Ferd.prototype.hear = function(filter, capture, callback) {
   var self = this;
   var slack = this.slack;
   var messages = this.messages
-    .filter(m => filter(m) && m.text.match(capture))
+    .filter(m => filter(m) && m.text.match(capture));
 
   var disposable = messages
     .subscribe(function(message) {
-      // console.log(message.text);
       var response = Response(capture, message, slack)
       callback(response);
     });
@@ -109,22 +127,25 @@ Ferd.prototype.hear = function(filter, capture, callback) {
 };
 
 /**
- * Sets up a message stream
+ * Ferd.prototype._createMessageStream
+ * 
  * @private
- * @return {observable} - Message Stream
+ * @description Sets up a message stream.
+ * @return {observable} Message Stream
  */
-Ferd.prototype.createMessageStream = function() {
+Ferd.prototype._createMessageStream = function() {
   var messages = rx.Observable.fromEvent(this.slack, 'message')
-    .where(e => e.type === 'message')
-    // .map(e => new Message(e));
+    .where(e => e.type === 'message');
   return messages;
 };
 
 /**
- * Bootstraps Ferd identity
+ * Ferd.prototype._setUp
+ * 
  * @private
+ * @description Bootstraps Ferd identity. Returns nothing.
  */
-Ferd.prototype.setUp = function() {
+Ferd.prototype._setUp = function() {
   this.name = this.slack.self.name;
   this.id = this.slack.self.id;
 };
