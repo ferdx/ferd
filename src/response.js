@@ -47,6 +47,16 @@ Response.prototype.send = function(outgoingMessage) {
 };
 
 /**
+ * Posts message to same channel
+ * @param  {obj} outgoingMessage A message object
+ */
+Response.prototype.postMessage = function(outgoingMessage) {
+  var channelId = this.message.channel;
+  var channel = this.getChannelGroupOrDMByID(channelId);
+  channel.postMessage(outgoingMessage);
+};
+
+/**
  * Response.prototype.sendDirectMessage
  *
  * @description Sends a direct message to a user. Returns nothing.
@@ -107,7 +117,7 @@ Response.prototype.getDMByName = function(name) {
  */
 Response.prototype.getChannelGroupOrDMByID = function(id) {
   return this.slack.getChannelGroupOrDMByID(id);
-}
+};
 
 /***
  * BUG: UNTESTED
