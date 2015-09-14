@@ -2,12 +2,9 @@ var Slack = require('slack-client');
 var rx = require('rx');
 var Response = require('./response');
 
-// TODO: FIGURE OUT HOW TO DESTROY OBSERVABLES
-// BUG: OBSERVABLES MUST BE EXPLICITLY DESTROYED. MEMORY LEAK!
-
 /**
  * Ferd
- * 
+ *
  * @constructor
  * @description A modular Slack Bot. Returns nothing.
  * @param {String} apiToken Slack's Bot Integration API Token
@@ -17,6 +14,8 @@ var Ferd = function(apiToken) {
   this.messages = null;
   this.name = null;
   this.id = null;
+  this.disposablesCounter = 0;
+  this.disposables = {};
 };
 
 /**
@@ -36,17 +35,24 @@ Ferd.prototype.login = function() {
 /**
  * Ferd.prototype.logout
  *
- * @description Closes WebSocket with Slack's Real-time Messaging API. Returns
- *   nothing.
+ * @description Closes WebSocket with Slack's Real-time Messaging API. Disposese all the disposables created
+ *   from listeners. Returns nothing.
  */
 Ferd.prototype.logout = function() {
-  this.slack.disconnect();
+
   // destroy all observables created from this.messages
+  for(var key in this.disposables) {
+    this.disposables[key].dispose();
+
+  }
+
+  this.slack.disconnect();
+
 };
 
 /**
  * Ferd.prototype.addModule
- * 
+ *
  * @description Injects a module into Ferd. Returns nothing.
  * @param {module} ferdModule A module to inject into Ferd. Example:
  *   `ferd.addModule(require('./ferd_modules/yo.js'))`
@@ -57,7 +63,7 @@ Ferd.prototype.addModule = function(ferdModule) {
 
 /**
  * Ferd.prototype.addModules
- * 
+ *
  * @description Injects modules into Ferd. Returns nothing.
  * @param {module[]} ferdModules An array of modules to inject into Ferd.
  *   Example: `ferd.addModules([require('ferd-bart'), require('./ferd_modules/yo.js'), ...])`
@@ -109,7 +115,7 @@ Ferd.prototype.respond = function(capture, callback) {
  * @param {Function} filter A function that returns true or false. Takes in message.
  * @param {String} capture A regular expression to trigger the callback on
  * @param {Function} callback A callback with a response object passed in
- * @return {disposable} More reactive shenanigans.
+ * @return {observable} message stream filered with filer and capture applied to it.
  */
 Ferd.prototype.hear = function(filter, capture, callback) {
   var self = this;
@@ -121,14 +127,19 @@ Ferd.prototype.hear = function(filter, capture, callback) {
     .subscribe(function(message) {
       var response = Response(capture, message, slack)
       callback(response);
+    }, function(err) {
+      console.error(err);
+    }, function() {
+      console.log('Completed!');
     });
 
-  return disposable;
+  self.disposables[self.disposablesCounter++] = disposable;
+  return messages;
 };
 
 /**
  * Ferd.prototype._createMessageStream
- * 
+ *
  * @private
  * @description Sets up a message stream.
  * @return {observable} Message Stream
@@ -141,7 +152,7 @@ Ferd.prototype._createMessageStream = function() {
 
 /**
  * Ferd.prototype._setUp
- * 
+ *
  * @private
  * @description Bootstraps Ferd identity. Returns nothing.
  */
