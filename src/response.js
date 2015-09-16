@@ -51,7 +51,7 @@ Response.prototype.send = function(outgoingMessage) {
  * @param  {obj} outgoingMessage A message object
  */
 Response.prototype.postMessage = function(outgoingMessage) {
-  var channelId = this.message.channel;
+  var channelId = this.incomingMessage.channel;
   var channel = this.getChannelGroupOrDMByID(channelId);
   channel.postMessage(outgoingMessage);
 };
