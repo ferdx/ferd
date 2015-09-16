@@ -37,18 +37,23 @@ var Response = function(trigger, incomingMessage, slack, match) {
 /**
  * Response.prototype.send
  *
- * @description Sends a message to same channel. Returns nothing.
- * @param {Object} outgoingMessage The message to send back.
+ * @description Sends a message to same channel in which the incoming message
+ *   was captured.
+ * @param {Object} outgoingMessage The message to send back
+ * @return {Object} The message object
  */
 Response.prototype.send = function(outgoingMessage) {
   var channelId = this.incomingMessage.channel;
   var channel = this.getChannelGroupOrDMByID(channelId);
-  channel.send(outgoingMessage);
+  var m = channel.send(outgoingMessage);
+  return m;
 };
 
 /**
- * Posts message to same channel
- * @param  {obj} outgoingMessage A message object
+ * Response.prototype.postMessage
+ * 
+ * @description Posts message to same channel. Returns nothing.
+ * @param {Object} outgoingMessage A message object
  */
 Response.prototype.postMessage = function(outgoingMessage) {
   var channelId = this.incomingMessage.channel;

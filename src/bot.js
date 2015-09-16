@@ -161,7 +161,7 @@ Ferd.prototype.hear = function(filter, capture, callback) {
   var self = this;
   var slack = this.slack;
   var messages = this.messages
-    .filter(m => filter(m) && m.text.match(capture));
+    .filter(m => filter(m) && m.text && m.text.match(capture));
 
   var disposable = messages
     .subscribe(function(message) {
