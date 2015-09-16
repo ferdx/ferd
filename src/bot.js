@@ -43,7 +43,6 @@ Ferd.prototype.logout = function() {
   // destroy all observables created from this.messages
   for(var key in this.disposables) {
     this.disposables[key].dispose();
-
   }
 
   this.slack.disconnect();
@@ -115,7 +114,7 @@ Ferd.prototype.respond = function(capture, callback) {
  * @param {Function} filter A function that returns true or false. Takes in message.
  * @param {String} capture A regular expression to trigger the callback on
  * @param {Function} callback A callback with a response object passed in
- * @return {observable} message stream filered with filer and capture applied to it.
+ * @return {disposable} trashcan.
  */
 Ferd.prototype.hear = function(filter, capture, callback) {
   var self = this;
@@ -134,8 +133,16 @@ Ferd.prototype.hear = function(filter, capture, callback) {
     });
 
   self.disposables[self.disposablesCounter++] = disposable;
-  return messages;
-};
+  return disposable;
+  };
+
+/**
+ * @description Disposes the disposable
+ * @param  {disposable} disposable The disposable to dispose
+ */
+Ferd.prototype.ignore = function(disposable) {
+  return disposable.dispose();
+}
 
 /**
  * Ferd.prototype._createMessageStream
