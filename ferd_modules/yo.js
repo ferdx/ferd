@@ -6,19 +6,15 @@ module.exports = function(ferd) {
     response.send("No, " + sender.name + ", you " + "aren't " + response.match[2]);
   });
 
-  ferd.listen(/yo/i, function(response) {
+  var a = ferd.listen(/yo/i, function(response) {
     var sender = response.getMessageSender();
     response.send(getRandomYo() + sender.name);
     yoCount++;
   });
+  // ferd.ignore(a);
 
-  ferd.listen(/how many yo?/i, function(response) {
-    response.send("You've said yo " + yoCount + " times");
-  });
-
-  ferd.listen(/ferd poo/i, function(response) {
-    var sender = response.getMessageSender();
-    response.sendDirectMessage('No, ' + sender.name + '. Poo be upon you!');
+  ferd.session(/hello/, /goodbye/, function(response) {
+    response.send("I hear you... " + response.getMessageSender().name);
   });
 
 };
