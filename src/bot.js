@@ -107,6 +107,47 @@ Ferd.prototype.respond = function(capture, callback) {
 };
 
 /**
+ * Allows multi-user sessions
+ * @param  {regex}   hello    regex triggered to register user in session
+ * @param  {regex}   goodbye  regex triggered to kick user out of session
+ * @param  {Function} callback callback for all user messages in session
+ * @param  {object}   options
+ * @return {disposable}            garbage can
+ */
+Ferd.prototype.session = function(hello, goodbye, callback, options) {
+  var self = this;
+  var users = {};
+  var helloCb =  (options && options.hello ) || ((res) => {res.send("hello " + res.getMessageSender().name) });
+  var goodbyeCb = (options && options.goodbye) || ((res) => {res.send("goodbye " + res.getMessageSender().name)});
+
+  var goodbyeListener = this.listen(goodbye, (res) => {
+    var userId = res.incomingMessage.user;
+    users[userId] = null;
+    goodbyeCb(res);
+  });
+
+  var callbackListener = this.hear(m => {
+    return !!users[m.user];
+  }, /.*/, callback);
+
+  var helloListener = this.listen(hello, (res) => {
+    var userId = res.incomingMessage.user;
+    var username = res.getMessageSender().name;
+    users[userId] = username;
+    helloCb(res);
+  });
+
+  var disposable =  rx.Disposable.create(() => {
+    callbackListener.dispose();
+    helloListener.dispose();
+    goodbyeListener.dispose();
+  });
+
+  return disposable;
+
+};
+
+/**
  * Ferd.prototype.hear
  *
  * @description Listens to message stream for `filter` to return true and
@@ -137,7 +178,9 @@ Ferd.prototype.hear = function(filter, capture, callback) {
   };
 
 /**
- * @description Disposes the disposable
+ * Ferd.prototype.ignore
+ *
+ * @description Stops listening on the stream, or more abstractly, disposes the disposable
  * @param  {disposable} disposable The disposable to dispose
  */
 Ferd.prototype.ignore = function(disposable) {
