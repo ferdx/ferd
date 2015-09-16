@@ -22,24 +22,10 @@ module.exports = function(ferd) {
   ferd.listen(/countdown\s(\d+)\s(seconds)/i, function(response) {
     var sender = response.getMessageSender();
     var matches = response.match;
-    var timerStarted = false;
     var timeRemaining = parseInt(matches[1]);
     var timeString = secondsToString(timeRemaining);
     var timerInterval;
     var m;
-
-    /**
-     * Runs the initial logic to check if the user has entered a valid time. If
-     * they haven't, inform them and set timerStarted to true. This prevents the
-     * updater function from running later. If it is a valid input, however,
-     * then kick things off as normal.
-     */
-    if (timeRemaining <= 0) {
-      timerStarted = true;
-      m = response.send('Sorry ' + sender.name + ', but you can only use numbers greater than 0 for the countdown! Type `countdown help` for valid countdown formats.');
-    } else {
-      m = response.send('Time remaining: ' + timeString);
-    }
 
     /**
      * beginCountdown
@@ -54,7 +40,7 @@ module.exports = function(ferd) {
         } else {
           timeRemaining = timeRemaining - 1;
           timeString = secondsToString(timeRemaining);
-          m.updateMessage('Time remaining: ' + timeString);
+          response.updateMessage(m, 'Time remaining: ' + timeString);
         }
       }, 1000);
     };
@@ -71,24 +57,14 @@ module.exports = function(ferd) {
     };
 
     /**
-     * @description An observer on the message object, which lets us know when
-     *   it's been posted via the timestamp. If the timestamp has been added,
-     *   it means the message has been successfully posted and we can now track
-     *   it for future updating.
-     * @param {[type]} 
-     * @param {[type]} 
-     * @return {[type]}
-     *
-     * TODO: Possibly refactor into a helper outside of this.
+     * Run the style
      */
-    Object.observe(m, function(changes) {
-      changes.forEach(function(change) {
-        if (timerStarted === false && change.name === 'ts') {
-          timerStarted = true;
-          beginCountdown();
-        }
-      });
-    }, ['add']);
+    if (timeRemaining <= 0) {
+      m = response.send('Sorry ' + sender.name + ', but you can only use numbers greater than 0 for the countdown! Type `countdown help` for valid countdown formats.');
+    } else {
+      m = response.send('Time remaining: ' + timeString);
+      beginCountdown();
+    }
 
   });
 
