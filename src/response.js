@@ -50,6 +50,24 @@ Response.prototype.send = function(outgoingMessage) {
 };
 
 /**
+ * Response.prototype.updateMessage
+ *
+ * @description Updates a message with a new string. Returns nothing.
+ * @param {Object} message The message object
+ * @param {String} string The new message to replace the old
+ */
+Response.prototype.updateMessage = function(message, string) {
+  if (message.ts) {
+    message.updateMessage(string);
+  } else {
+    Object.observe(message, function(changes) {
+      message.updateMessage(string);
+      Object.unobserve(message);
+    }, ['add']);
+  }
+};
+
+/**
  * Response.prototype.postMessage
  * 
  * @description Posts message to same channel. Returns nothing.
