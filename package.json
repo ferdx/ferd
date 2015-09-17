@@ -1,6 +1,6 @@
 {
   "name": "ferd",
-  "version": "0.5.2",
+  "version": "0.5.0",
   "description": "A modular Slackbot",
   "main": "index.js",
   "author": "FerdX (http://ferdx.io)",
