@@ -1,9 +1,14 @@
 # A modular slackbot
 
-Ferd is a modular Slack Bot. It abstracts away the complexity of the Slack Real-Time Messaging API.
-# To Run
-Uses ES6. Runs using node --harmony
-```
+[![Build Status](https://travis-ci.org/ferdx/ferd.svg?branch=master)](https://travis-ci.org/ferdx/ferd)
+
+Ferd is a modular Slack Bot. It abstracts away the complexity of the Slack Real-Time Messaging API. Use this repo as an open source project to build your own bots, or check out [FerdX](http://ferdx.io) for some fun.
+
+## To Run
+
+Uses ES6. Runs using `node --harmony`
+
+```javascript
 var ferdModule = require('ferdModule');
 var Ferd = require('ferd');
 
@@ -13,8 +18,11 @@ ferd.login(); //bot starts listening
 ferd.logout(); //bot stops listening
 ```
 
-# Slack Modules
-```
+## Creating Ferd Modules
+
+To create modules, use the following syntax:
+
+```javascript
 /* All variables in this closure are accessible by all bots using this module */
 var randomYo = ["whats up? ", "hey ", "yo "];
 var getRandomYo = function() {
@@ -53,9 +61,27 @@ module.exports = function(ferd) {
     response.send(yoCount);
   });
 };
-
-
 ```
+
 ## Slack types
 
-https://api.slack.com/types
+For more information on Slack types, check out [https://api.slack.com/types](https://api.slack.com/types).
+
+## Contributing
+
+For contributing, see the [contributing guidelines.](CONTRIBUTING.md)
+
+## Style Guide
+
+If you're contributing, make sure to check out the [style guide.](STYLE-GUIDE.md)
+
+## Team
+
+* Nick Salloum <nick@callmenick.com>
+* Timothy Quach <timothyquachbot@gmail.com>
+* Andrew Kishino <AndrewKishino@gmail.com>
+* David Rosson <david@rosson.com.au>
+
+## License
+
+MIT
