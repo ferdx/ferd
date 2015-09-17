@@ -69,8 +69,8 @@ For more information on Slack types, check out [https://api.slack.com/types](htt
 
 ## Team
 
-* Timothy Quach <timothyquachbot@gmail.com>
 * Nick Salloum <nick@callmenick.com>
+* Timothy Quach <timothyquachbot@gmail.com>
 * Andrew Kishino <AndrewKishino@gmail.com>
 * David Rosson <david@rosson.com.au>
 
