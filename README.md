@@ -6,7 +6,7 @@ Ferd is a modular Slack Bot. It abstracts away the complexity of the Slack Real-
 
 ## To Run
 
-Uses ES6. Runs using node --harmony
+Uses ES6. Runs using `node --harmony`
 
 ```javascript
 var ferdModule = require('ferdModule');
@@ -66,6 +66,14 @@ module.exports = function(ferd) {
 ## Slack types
 
 For more information on Slack types, check out [https://api.slack.com/types](https://api.slack.com/types).
+
+## Contributing
+
+For contributing, see the [contributing guidelines.](CONTRIBUTING.md)
+
+## Style Guide
+
+If you're contributing, make sure to check out the [style guide.](STYLE-GUIDE.md)
 
 ## Team
 
