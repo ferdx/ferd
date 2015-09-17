@@ -3,11 +3,23 @@
   "version": "0.4.2", 
   "description": "A modular Slackbot",
   "main": "index.js",
-  "author": "Timothy Quach <timothyquachbot@gmail.com>",
+  "author": "FerdX (http://ferdx.io)",
   "contributors": [
     {
       "name": "Nick Salloum",
       "email": "nick@callmenick.com"
+    },
+    {
+      "name": "Timothy Quach",
+      "email": "timothyquachbot@gmail.com"
+    },
+    {
+      "name": "Andrew Kishino",
+      "email": "AndrewKishino@gmail.com"
+    },
+    {
+      "name": "David Rosson",
+      "email": "david@rosson.com.au"
     }
   ],
   "license": "MIT",
