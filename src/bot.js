@@ -81,7 +81,7 @@ Ferd.prototype.addModules = function(ferdModules) {
  *   a `callback` function.
  * @param {String} capture A regular expression to trigger the callback on
  * @param {Function} callback A callback with a response object passed in
- * @return {observable} - WHAT IS AN OBSERVABLE?
+ * @return {observable}
  */
 Ferd.prototype.listen = function(capture, callback) {
   return this.hear(function(message) {
@@ -96,7 +96,7 @@ Ferd.prototype.listen = function(capture, callback) {
  *   trigger, then calls `callback`
  * @param {String} capture A regular expression to trigger the callback on
  * @param {Function} callback A callback with a response object passed in
- * @return {observable} - PUPPIES?
+ * @return {observable}
  */
 Ferd.prototype.respond = function(capture, callback) {
   var self = this;
@@ -112,7 +112,7 @@ Ferd.prototype.respond = function(capture, callback) {
  * @param  {regex}   goodbye  regex triggered to kick user out of session
  * @param  {Function} callback callback for all user messages in session
  * @param  {object}   options
- * @return {disposable}            garbage can
+ * @return {disposable}
  */
 Ferd.prototype.session = function(hello, goodbye, callback, options) {
   var self = this;
@@ -155,7 +155,7 @@ Ferd.prototype.session = function(hello, goodbye, callback, options) {
  * @param {Function} filter A function that returns true or false. Takes in message.
  * @param {String} capture A regular expression to trigger the callback on
  * @param {Function} callback A callback with a response object passed in
- * @return {disposable} trashcan.
+ * @return {disposable}
  */
 Ferd.prototype.hear = function(filter, capture, callback) {
   var self = this;
@@ -181,7 +181,7 @@ Ferd.prototype.hear = function(filter, capture, callback) {
  * Ferd.prototype.ignore
  *
  * @description Stops listening on the stream, or more abstractly, disposes the disposable
- * @param  {disposable} disposable The disposable to dispose
+ * @param  {disposable}
  */
 Ferd.prototype.ignore = function(disposable) {
   return disposable.dispose();
@@ -192,7 +192,7 @@ Ferd.prototype.ignore = function(disposable) {
  *
  * @private
  * @description Sets up a message stream.
- * @return {observable} Message Stream
+ * @return {observable} - A message stream
  */
 Ferd.prototype._createMessageStream = function() {
   var messages = rx.Observable.fromEvent(this.slack, 'message')

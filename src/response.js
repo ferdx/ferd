@@ -2,10 +2,6 @@
  * ResponseFactory
  *
  * @description The factory that builds the response
- * @param {[type]} 
- * @param {[type]} 
- * @param {[type]} 
- * @return {[type]} [description]
  */
 var ResponseFactory = function(trigger, incomingMessage, slack) {
   var match = incomingMessage.text.match(trigger);
@@ -19,13 +15,13 @@ var ResponseFactory = function(trigger, incomingMessage, slack) {
 
 /**
  * Response
- * 
+ *
  * @constructor
  * @description The Response class. Returns nothing.
- * @param {regex} trigger [description]
- * @param {message} message [description]
- * @param {slack} slack [description]
- * @param {match} match [description]
+ * @param {regex} trigger
+ * @param {message} message
+ * @param {slack} slack
+ * @param {match} match
  */
 var Response = function(trigger, incomingMessage, slack, match) {
   this.incomingMessage = incomingMessage;
@@ -69,7 +65,7 @@ Response.prototype.updateMessage = function(message, string) {
 
 /**
  * Response.prototype.postMessage
- * 
+ *
  * @description Posts message to same channel. Returns nothing.
  * @param {Object} outgoingMessage A message object
  */
@@ -93,7 +89,7 @@ Response.prototype.sendDirectMessage = function(outgoingMessage) {
 
 /**
  * Response.prototype.getMessageSender
- * 
+ *
  * @description Returns Slack user object of sender. Visit the Slack API to see
  *   more about user types - https://api.slack.com/types/user
  * @return {Object} A slack user object
@@ -131,7 +127,7 @@ Response.prototype.getDMByName = function(name) {
 
 /**
  * Response.prototype.getChannelGroupOrDMByID
- * 
+ *
  * @description Returns Channel, Group, or IM slack object. Use to send
  *   appropriate message to right channel. Visit the Slack API to see more about
  *   message types - https://api.slack.com/types
@@ -144,8 +140,6 @@ Response.prototype.getChannelGroupOrDMByID = function(id) {
 
 /***
  * BUG: UNTESTED
- * @param  {[type]} id [description]
- * @return {[type]}    [description]
  */
 Response.prototype.getFile = function(id) {
   return this.slack.getFileByID(id);
